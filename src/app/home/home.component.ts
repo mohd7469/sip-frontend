@@ -1,7 +1,7 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 
 import { Web } from 'sip.js';
-import { getAudio, getButton, getButtons, getInput, getSpan } from './demo-utils';
+import { getAudio, getButton, getButtons, getInput, getSpan, getDiv } from './demo-utils';
 // @ts-ignore
 const { SimpleUser, SimpleUserDelegate, SimpleUserOptions } = Web;
 
@@ -14,19 +14,18 @@ declare var $: any;
 })
 
 export class HomeComponent implements OnInit, AfterViewInit {
-  isLoading = false;
+  isCalling = false;
+  isConnected = false;
 
-  constructor() {
-  }
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
-    // console.log('loading ', this.isLoading);
   }
 
   ngAfterViewInit() {
-    const statusSpan = getSpan('status');
-    const serverSpan = getSpan('server');
-    const targetSpan = getSpan('target');
+    const statusDiv = getDiv('status');
+    // const serverSpan = getSpan('server');
+    // const targetSpan = getSpan('target');
     // const connectButton = getButton('connect');
     const callButton = getButton('call');
     const hangupButton = getButton('hangup');
@@ -37,18 +36,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     const holdCheckbox = getInput('hold');
     const muteCheckbox = getInput('mute');
 
-    /*config: {
-        password: user.Pass,
-        displayName: user.Display,
-        uri: 'sip:' + user.User + '@' + user.Realm,
-        wsServers: user.WSServer,
-        registerExpires: 30,
-        traceSip: true,
-        log: {
-          level: 0,
-        }
-    },*/
-
     const user = {
       'User'      : 'crescas',                    // User Name
       'Pass'      : 'ab*Nb67f',                   // Password
@@ -58,14 +45,16 @@ export class HomeComponent implements OnInit, AfterViewInit {
     };
 
     const webSocketServer = user.WSServer;
-    serverSpan.innerHTML = webSocketServer;
+    // serverSpan.innerHTML = webSocketServer;
 
     const target = 'sip:' + user.User + '@' + user.Realm;
-    targetSpan.innerHTML = target;
+    // targetSpan.innerHTML = target;
 
-    statusSpan.innerHTML = 'Connecting..';
+    statusDiv.innerHTML = 'Connecting..';
+    this.isConnected = false;
+    this.cdr.detectChanges();
 
-    audioElement.hidden = true;
+    // audioElement.hidden = true;
 
     const displayName = user.Display;
 
@@ -74,6 +63,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
       onCallCreated: (): void => {
         console.log(`[${displayName}] Call created`);
         callButton.disabled = true;
+        this.isCalling = true;
+        this.cdr.detectChanges();
         hangupButton.disabled = false;
         // keypadDisabled(true);
         holdCheckboxDisabled(true);
@@ -88,6 +79,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
       onCallHangup: (): void => {
         console.log(`[${displayName}] Call hangup`);
         callButton.disabled = false;
+        this.isCalling = false;
+        this.cdr.detectChanges();
         hangupButton.disabled = true;
         // keypadDisabled(true);
         holdCheckboxDisabled(true);
@@ -120,6 +113,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
       // connectButton.disabled = true;
       // disconnectButton.disabled = true;
       callButton.disabled = true;
+      this.isCalling = true;
+      this.cdr.detectChanges();
       hangupButton.disabled = true;
       simpleUser
         .connect()
@@ -127,8 +122,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
           // connectButton.disabled = true;
           // disconnectButton.disabled = false;
           callButton.disabled = false;
+          this.isCalling = false;
           hangupButton.disabled = true;
-          statusSpan.innerHTML = 'Connected';
+          statusDiv.innerHTML = 'Connected';
+          this.isConnected = true;
+          this.cdr.detectChanges();
         })
         .catch((error: Error) => {
           // connectButton.disabled = false;
@@ -140,6 +138,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     callButton.addEventListener('click', () => {
       callButton.disabled = true;
+      this.isCalling = true;
+      this.cdr.detectChanges();
       hangupButton.disabled = true;
       simpleUser.call(target).catch((error: Error) => {
         console.error(`[${simpleUser.id}] failed to place call`);
@@ -150,6 +150,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     hangupButton.addEventListener('click', () => {
       callButton.disabled = true;
+      this.isCalling = true;
+      this.cdr.detectChanges();
       hangupButton.disabled = true;
       simpleUser.hangup().catch((error: Error) => {
         console.error(`[${simpleUser.id}] failed to hangup call`);

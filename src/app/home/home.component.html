@@ -1,68 +1,73 @@
 <div class="container">
-  <h2>Demo: Audio Call - Outbound</h2>
-  <ol>
-    <li>
-      <button id="connect" disabled>Server <span id="status"></span></button>
-      with
-      <code><span id="server"></span></code>
-    </li>
-    <li>
-      <button id="call" disabled>Place Call</button>
-      with
-      <code><span id="target"></span></code>
-    </li>
-    <li>
-      <button id="hangup" disabled>Hangup Call</button>
-    </li>
-    <!--<li>
-      <button id="disconnect" disabled>Disconnect</button>
-    </li>-->
-  </ol>
-
-  <!--<p>
-    When the call is established, the remote audio is added to the following HTML5 audio element...
-  </p>-->
-  <audio id="remoteAudio" controls>
-    <p>Your browser doesn't support HTML5 audio.</p>
-  </audio>
-
-
-  <!--<div>
-    <p>
-    While the call is established, DTMF may be sent using the following "keypad"...
-  </p>
-    <div class="dtmf">DTMF sent: <span id="dtmf"></span></div>
-    <div>
-      <button class="keypad" disabled>1</button>
-      <button class="keypad" disabled>2</button>
-      <button class="keypad" disabled>3</button>
-    </div>
-    <div>
-      <button class="keypad" disabled>4</button>
-      <button class="keypad" disabled>5</button>
-      <button class="keypad" disabled>6</button>
-    </div>
-    <div>
-      <button class="keypad" disabled>7</button>
-      <button class="keypad" disabled>8</button>
-      <button class="keypad" disabled>9</button>
-    </div>
-    <div>
-      <button class="keypad" disabled>*</button>
-      <button class="keypad" disabled>0</button>
-      <button class="keypad" disabled>#</button>
-    </div>
-  </div>-->
-
-  <p>
-    While the call is established, the session may placed on hold or muted...
-  </p>
-  <div>
-    <input type="checkbox" id="hold" name="hold" disabled>
-    <label for="hold">Hold</label>
+  <div class="fixed-top text-center center animate__animated animate__fadeIn mt-4 text-muted">
+    <div id="status">Retrying..</div>
   </div>
-  <div>
-    <input type="checkbox" id="mute" name="mute" disabled>
-    <label for="mute">Mute</label>
+
+  <div class="text-muted text-center center">
+    <div class="row align-items-center vh-100">
+      <div class="col">
+        <div [hidden]="isConnected">
+          <div class="animate__animated animate__fadeIn">
+            <div class="fa-stack fa-3x">
+              <i class="fa fa-circle fa-stack-2x text-secondary"></i>
+              <i class="fa fa-phone-slash fa-stack-1x fa-inverse"></i>
+            </div>
+            <p class="mt-2 fa-md">
+              Not reachable
+            </p>
+          </div>
+        </div>
+        <div [hidden]="!isConnected">
+          <div [hidden]="isCalling">
+            <div class="animate__animated animate__fadeIn">
+              <button id="call" class="no-style" disabled>
+                <div class="fa-stack fa-3x hvr-grow">
+                  <i class="fa fa-circle fa-stack-2x text-success cursor"></i>
+                  <i class="fa fa-phone fa-stack-1x fa-inverse cursor"></i>
+                </div>
+              </button>
+              <p class="mt-2 fa-md">
+                Click to call
+              </p>
+            </div>
+          </div>
+
+          <div [hidden]="!isCalling">
+            <div class="mb-5 animate__animated animate__fadeInUp">
+              <span class="btn_check mx-1">
+                <input type="checkbox" id="hold" name="hold" disabled>
+                <label class="btn btn-default hvr-glow" for="hold">
+                  <i class="fa fa-pause"></i> Hold
+                </label>
+              </span>
+              <span class="btn_check mx-1">
+                <input type="checkbox" id="mute" name="mute" disabled>
+                <label class="btn btn-default hvr-glow" for="mute">
+                  <i class="fa fa-microphone-slash mr-2"></i> Mute
+                </label>
+              </span>
+            </div>
+
+            <div class="mb-5 animate__animated animate__zoomIn">
+              <audio id="remoteAudio" controls>
+                <p>Your browser doesn't support HTML5 audio.</p>
+              </audio>
+            </div>
+
+            <div class="animate__animated animate__fadeInDown">
+              <button id="hangup" class="no-style" disabled>
+                <div class="fa-stack fa-3x hvr-grow">
+                  <i class="fa fa-circle fa-stack-2x text-danger cursor"></i>
+                  <i class="fa fa-phone fa-stack-1x fa-inverse cursor fa-flip-both"></i>
+                </div>
+              </button>
+              <p class="mt-2 fa-md">
+                Hang up
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
