@@ -18,3 +18,23 @@
 
 @import "theme/animate";
 //@import "theme/hover";
+
+
+@import "animation/hover-min.css";
+@import "animation/animate.min.css";
+
+.cursor {
+  cursor: pointer !important;
+}
+
+.fa-md {
+  font-size: 1.3em !important;
+}
+
+.no-style {
+  border: none !important;
+  width: auto !important;
+  margin: 0 !important;
+  background: transparent !important;
+}
+
