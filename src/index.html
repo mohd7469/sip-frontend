@@ -14,8 +14,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
+          media="all">
   </head>
-  <body>
+  <body class="bg-light">
     <!--[if lt IE 10]>
       <p>
         You are using an <strong>outdated</strong> browser. Please
@@ -28,5 +31,29 @@
       </p>
     </noscript>
     <app-root></app-root>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fingerprintjs2/2.1.0/fingerprint2.min.js"></script>
+    <script type="text/javascript">
+      window.addEventListener('load', (event) => {
+        if (window.requestIdleCallback) {
+          requestIdleCallback(() => {
+            fingerprint();
+          })
+        } else {
+          setTimeout(() => {
+            fingerprint();
+          }, 500)
+        }
+      });
+
+      function fingerprint() {
+        Fingerprint2.get(function (components) {
+          var values = components.map(component => component.value);
+          var _browerID = Fingerprint2.x64hash128(values.join(''), 31);
+          console.log('_browerID ', _browerID);
+          window._browerID = _browerID;
+        })
+      }
+    </script>
   </body>
 </html>
